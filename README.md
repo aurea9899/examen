@@ -1,1 +1,66 @@
 # examen
+#include "p16f887.inc"
+    
+ __CONFIG _CONFIG1, _FOSC_INTRC_NOCLKOUT & _WDTE_OFF & _PWRTE_OFF & _MCLRE_OFF & _CP_OFF & _CPD_OFF & _BOREN_ON & _IESO_ON & _FCMEN_ON & _LVP_ON
+ __CONFIG _CONFIG2, _BOR4V_BOR40V & _WRT_OFF
+
+RES_VECT  CODE    0x0000            
+    GOTO    START                
+
+MAIN_PROG CODE                     
+
+START
+    BANKSEL OSCCON
+    movlw 0x71
+    movwf OSCCON
+    MOVLW 0x00
+    MOVWF TRISA
+    BSF STATUS,0
+    BSF TRISB,5
+    BSF TRISB,6
+    BSF TRISB,7
+    BANKSEL ANSEL
+    MOVLW 0x00
+    MOVWF ANSEL
+    BANKSEL PORTA
+    CLRF PORTA
+    contador=0x00
+inicio
+    BTFSS PORTB,7
+    BTFSC PORTB,7
+    GOTO SUMA
+    BTFSS PORTB,6
+    BTFSC PORTB,6
+    GOTO RESTA
+    BTFSS PORTB,5
+    BTFSC PORTB,5
+    GOTO RESE
+    GOTO inicio
+SUMA
+    GOTO NO
+NO
+    BTFSS PORTB,7
+    GOTO SI
+    GOTO NO
+SI 
+    INCF PORTA,1
+    GOTO inicio
+RESTA 
+    GOTO NO1
+NO1
+    BTFSS PORTB,6
+    GOTO SI1
+    GOTO NO1
+SI1
+    DECF PORTA,1
+    GOTO inicio
+RESE
+    GOTO NO2
+NO2
+    BTFSS PORTB,5
+    GOTO SI2
+    GOTO NO2
+SI2
+    CLRF PORTA
+    GOTO inicio
+    END
